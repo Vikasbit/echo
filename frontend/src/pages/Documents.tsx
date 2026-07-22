@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { UploadCloud, FileText, CheckCircle, Loader2, AlertTriangle, Info, Calendar, Settings, Tags } from "lucide-react";
 import { api } from "../lib/api";
 

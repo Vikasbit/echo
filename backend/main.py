@@ -3,6 +3,14 @@ Echo — Main Application Entry Point
 FastAPI app configuration, middleware injection, and router mounting.
 """
 
+import sys
+from pathlib import Path
+
+# Automatically add project root directory to sys.path for seamless local execution
+_ROOT = Path(__file__).resolve().parent.parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
 from contextlib import asynccontextmanager
 
 import structlog

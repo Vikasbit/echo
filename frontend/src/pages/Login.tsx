@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowRight, Lock, Mail, Loader2 } from "lucide-react";
+import { Lock, Mail, Loader2 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 
 export function Login() {
@@ -26,12 +26,6 @@ export function Login() {
     } else {
       navigate("/app");
     }
-  };
-
-  const handleDemoMode = () => {
-    // In a real app, this would set a demo session token or navigate to a read-only mode
-    localStorage.setItem("demoMode", "true");
-    navigate("/");
   };
 
   const handleOAuthLogin = async (provider: 'google' | 'azure') => {

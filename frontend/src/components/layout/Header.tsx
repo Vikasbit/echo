@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Search, Bell, Settings, Asterisk, LayoutDashboard, MessageSquare, FileText, Building, CreditCard, User as UserIcon } from "lucide-react";
+import { Bell, Settings, Asterisk, LayoutDashboard, MessageSquare, FileText, Building, CreditCard, User as UserIcon } from "lucide-react";
 import { cn } from "../../lib/utils";
 
 import { useAuth } from "../../hooks/useAuth";

@@ -1,6 +1,6 @@
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 export function HeroSection() {
   return (
