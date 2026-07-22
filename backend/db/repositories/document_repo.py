@@ -28,14 +28,14 @@ class DocumentRepository(SupabaseRepository):
 
     async def list_by_user(
         self,
-        user_id: str,
+        workspace_id: str,
         page: int = 1,
         page_size: int = 20,
         category: Optional[str] = None,
         status: Optional[str] = None,
         search: Optional[str] = None,
     ) -> Dict[str, Any]:
-        query = self.table.select("*", count="exact").eq("user_id", user_id)
+        query = self.table.select("*", count="exact").eq("workspace_id", workspace_id)
 
         if category:
             query = query.eq("category", category)

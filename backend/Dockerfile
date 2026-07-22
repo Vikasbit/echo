@@ -1,31 +1,39 @@
-# Use official Python runtime as a parent image
+# ============================================
+# Echo Backend Dockerfile
+# ============================================
+
+# Base Image
 FROM python:3.11-slim
 
-# Set environment variables
+# Environment Variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Install system dependencies (required for easyocr and pymupdf)
+# Install Linux Dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
-    libgl1-mesa-glx \
+    libgl1 \
     libglib2.0-0 \
+    gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
+# Set Working Directory
 WORKDIR /app
 
-# Copy requirements file first to leverage Docker cache
+# Copy Requirements
 COPY requirements.txt .
 
-# Install Python dependencies
+# Upgrade pip
+RUN pip install --upgrade pip
+
+# Install Python Packages
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the backend source code
+# Copy Project
 COPY . .
 
-# Expose the port (Railway typically uses PORT environment variable, which we will bind in uvicorn)
+# Expose FastAPI Port
 EXPOSE 8000
 
-# Start Uvicorn, mapping to Railway's dynamic PORT or fallback to 8000
-CMD uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}
+# Start FastAPI
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]

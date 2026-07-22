@@ -27,7 +27,7 @@ doc_service = DocumentService()
 
 @router.post("", response_model=ApiResponse[DocumentResponse])
 async def upload_file(
-    user_id: CurrentUser,
+    user: CurrentUser,
     file: UploadFile = File(...),
     category: Optional[str] = Form(default=None),
     equipment_tags: Optional[str] = Form(default=None),
@@ -63,7 +63,10 @@ async def upload_file(
 
     # Process the document
     document = await doc_service.process_document(
-        user_id=user_id,
+        user_id=user.id,
+        workspace_id=user.workspace_id,
+        company_id=user.company_id,
+        department=user.role, # passing role as department for now, or just leave blank if user.department is missing
         file_bytes=file_bytes,
         filename=file.filename,
         content_type=file.content_type,
@@ -79,7 +82,7 @@ async def upload_file(
 
 @router.post("/batch", response_model=ApiResponse[list[DocumentResponse]])
 async def upload_batch(
-    user_id: CurrentUser,
+    user: CurrentUser,
     files: List[UploadFile] = File(...),
     category: Optional[str] = Form(default=None),
 ):
@@ -99,7 +102,9 @@ async def upload_batch(
 
         try:
             document = await doc_service.process_document(
-                user_id=user_id,
+                user_id=user.id,
+                workspace_id=user.workspace_id,
+                company_id=user.company_id,
                 file_bytes=file_bytes,
                 filename=file.filename,
                 content_type=file.content_type,
@@ -116,7 +121,7 @@ async def upload_batch(
 
 
 @router.get("/{document_id}/status", response_model=ApiResponse[UploadStatusResponse])
-async def get_upload_status(document_id: str, user_id: CurrentUser):
+async def get_upload_status(document_id: str, user: CurrentUser):
     """Check the processing status of an uploaded document."""
     doc = await doc_service.get_document(document_id)
 

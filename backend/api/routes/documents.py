@@ -25,7 +25,7 @@ search_service = SearchService()
 
 @router.get("", response_model=PaginatedResponse[DocumentResponse])
 async def list_documents(
-    user_id: CurrentUser,
+    user: CurrentUser,
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
     category: Optional[str] = Query(default=None),
@@ -34,7 +34,7 @@ async def list_documents(
 ):
     """List documents with pagination and optional filters."""
     result = await doc_service.list_documents(
-        user_id=user_id,
+        workspace_id=user.workspace_id,
         page=page,
         page_size=page_size,
         category=category,
@@ -55,7 +55,7 @@ async def list_documents(
 
 @router.get("/search", response_model=ApiResponse[list[DocumentSearchResult]])
 async def search_documents(
-    user_id: CurrentUser,
+    user: CurrentUser,
     query: str = Query(min_length=1, max_length=500),
     category: Optional[str] = Query(default=None),
     file_type: Optional[str] = Query(default=None),
@@ -86,21 +86,21 @@ async def search_documents(
 
 
 @router.get("/{document_id}", response_model=ApiResponse[DocumentResponse])
-async def get_document(document_id: str, user_id: CurrentUser):
+async def get_document(document_id: str, user: CurrentUser):
     """Get a single document by ID."""
     doc = await doc_service.get_document(document_id)
     return ApiResponse(data=DocumentResponse(**doc))
 
 
 @router.delete("/{document_id}", response_model=ApiResponse)
-async def delete_document(document_id: str, user_id: CurrentUser):
+async def delete_document(document_id: str, user: CurrentUser):
     """Delete a document and all its processed chunks."""
     await doc_service.delete_document(document_id)
     return ApiResponse(message="Document deleted successfully")
 
 
 @router.get("/{document_id}/summary", response_model=ApiResponse[dict])
-async def get_document_summary(document_id: str, user_id: CurrentUser):
+async def get_document_summary(document_id: str, user: CurrentUser):
     """Get the AI-generated summary for a document."""
     doc = await doc_service.get_document(document_id)
     return ApiResponse(

@@ -127,18 +127,72 @@ class DocumentService:
                 "error_message": str(e)
             })
 
-    async def upload_document(self, file: UploadFile, user_id: str) -> Dict[str, Any]:
-        file_bytes = await file.read()
-        file_type = get_file_type(file.filename or "")
+    async def process_document(
+        self, 
+        user_id: str, 
+        workspace_id: str,
+        company_id: str,
+        department: str,
+        file_bytes: bytes, 
+        filename: str, 
+        content_type: str,
+        category: str | None = None,
+        equipment_tags: list[str] | None = None
+    ) -> Dict[str, Any]:
+        file_type = get_file_type(filename or "")
         
         doc_data = {
             "user_id": user_id,
-            "title": file.filename or "Untitled",
+            "workspace_id": workspace_id,
+            "company_id": company_id,
+            "department": department,
+            "uploaded_by": user_id,
+            "title": filename or "Untitled",
             "file_type": file_type,
             "file_size": len(file_bytes),
-            "status": "uploading"
+            "status": "uploading",
+            "category": category,
+            "equipment_tags": equipment_tags or []
         }
         
         doc = await self.doc_repo.create(doc_data)
         
-        return {"doc": doc, "file_bytes": file_bytes}
+        # Fire background task
+        asyncio.create_task(
+            self.process_document_background(
+                document_id=doc["id"],
+                file_bytes=file_bytes,
+                filename=filename,
+                user_id=user_id
+            )
+        )
+        
+        
+        return doc
+
+    async def list_documents(
+        self,
+        workspace_id: str,
+        page: int = 1,
+        page_size: int = 20,
+        category: str | None = None,
+        status: str | None = None,
+        search: str | None = None,
+    ) -> Dict[str, Any]:
+        return await self.doc_repo.list_by_user(
+            workspace_id=workspace_id,
+            page=page,
+            page_size=page_size,
+            category=category,
+            status=status,
+            search=search
+        )
+
+    async def get_document(self, document_id: str) -> Dict[str, Any]:
+        doc = await self.doc_repo.get_by_id(document_id)
+        if not doc:
+            raise ValueError(f"Document {document_id} not found")
+        return doc
+
+    async def delete_document(self, document_id: str) -> None:
+        await self.doc_repo.delete(document_id)
