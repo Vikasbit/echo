@@ -2,7 +2,6 @@
 .env
 .env.local
 .env.*.local
-*.env
 
 # Python
 __pycache__/
@@ -11,12 +10,17 @@ __pycache__/
 venv/
 env/
 .venv/
+*.egg-info/
 
 # Node
 node_modules/
 dist/
 build/
 .npm/
+
+# IDE
+.vscode/
+.idea/
 
 # OS
 .DS_Store

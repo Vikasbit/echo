@@ -1,12 +1,22 @@
 services:
   - type: web
     name: echo-backend
-    env: python
+    runtime: python
+    region: oregon
+    plan: free
+    rootDir: backend
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
+    startCommand: "uvicorn backend.main:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.11
+        value: "3.11.11"
+      - key: PYTHONPATH
+        value: "/opt/render/project/src"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
       - key: SUPABASE_URL
         sync: false
       - key: SUPABASE_KEY
@@ -14,4 +24,6 @@ services:
       - key: SUPABASE_SERVICE_KEY
         sync: false
       - key: GEMINI_API_KEY
+        sync: false
+      - key: CORS_ORIGINS
         sync: false

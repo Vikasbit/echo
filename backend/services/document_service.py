@@ -8,8 +8,6 @@ from __future__ import annotations
 import asyncio
 from typing import Any, Dict
 
-from fastapi import UploadFile
-
 from backend.core.config import get_settings
 from backend.core.logging import get_logger
 from backend.db.repositories.document_repo import DocumentRepository, ChunkRepository
@@ -50,7 +48,10 @@ class DocumentService:
             # AI Document Analysis (Metadata Extraction)
             await self.doc_repo.update_status(document_id, "analyzing")
             from openai import AsyncOpenAI
-            openai_client = AsyncOpenAI(api_key=settings.openai_api_key)
+            openai_client = AsyncOpenAI(
+                api_key=settings.gemini_api_key,
+                base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+            )
             
             # Use gpt-4o-mini for speed/cost on analysis
             system_prompt = (
@@ -66,7 +67,7 @@ class DocumentService:
             analysis_text = extracted_text[:8000]
             
             completion = await openai_client.chat.completions.create(
-                model="gpt-4o-mini",
+                model=settings.chat_model,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": analysis_text}

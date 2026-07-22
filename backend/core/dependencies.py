@@ -33,13 +33,7 @@ async def get_current_user(
         Authorization: Bearer <jwt_token>
     """
     if not authorization:
-        # Demo mode fallback (not recommended for production)
-        return UserContext(
-            id="demo-user-001",
-            workspace_id="demo-workspace-001",
-            company_id="demo-company-001",
-            role="Owner"
-        )
+        raise AuthenticationError("Authorization header required")
 
     if not authorization.startswith("Bearer "):
         raise AuthenticationError("Invalid authorization header format. Use: Bearer <token>")

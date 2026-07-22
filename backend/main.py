@@ -9,10 +9,10 @@ import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from core.config import get_settings
-from core.logging import setup_logging
-from core.middleware import RequestLoggingMiddleware
-from api.v1.router import api_router
+from backend.core.config import get_settings
+from backend.core.logging import setup_logging
+from backend.core.middleware import RequestLoggingMiddleware
+from backend.api.v1.router import api_router
 
 settings = get_settings()
 
