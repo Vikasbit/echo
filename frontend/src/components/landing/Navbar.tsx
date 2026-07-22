@@ -69,7 +69,7 @@ export function Navbar() {
                 Log in
               </a>
               <a
-                href="#enterprise"
+                href="/register"
                 className="group inline-flex items-center gap-1.5 px-4 py-2 text-[13px] font-semibold text-white bg-white/[0.08] hover:bg-white/[0.12] border border-white/[0.08] hover:border-white/[0.15] rounded-lg transition-all duration-200"
               >
                 Get Started
@@ -116,7 +116,7 @@ export function Navbar() {
                   Log in
                 </a>
                 <a
-                  href="#enterprise"
+                  href="/register"
                   onClick={() => setMobileOpen(false)}
                   className="px-4 py-3 text-sm font-semibold text-white text-center rounded-lg bg-primary hover:bg-primary/90 transition-colors"
                 >
